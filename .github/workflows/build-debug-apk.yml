@@ -1,0 +1,62 @@
+name: Build Debug APK
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Stub google-services.json
+        run: |
+          cat > app/google-services.json << 'EOT'
+          {
+            "project_info": {
+              "project_number": "000000000000",
+              "project_id": "mock-project-id",
+              "storage_bucket": "mock-project-id.appspot.com"
+            },
+            "client": [
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:000000000000:android:0000000000000001",
+                  "android_client_info": {
+                    "package_name": "com.openclaw.assistant.debug"
+                  }
+                },
+                "api_key": [{ "current_key": "mock-api-key" }],
+                "services": { "analytics_service": { "status": 1 }, "appinvite_service": { "status": 1, "other_platform_oauth_client": [] }, "ads_service": { "status": 2 } }
+              }
+            ],
+            "configuration_version": "1"
+          }
+          EOT
+
+      - name: Build Standard Debug APK
+        env:
+          FIREBASE_ENABLED: false
+        run: ./gradlew assembleStandardDebug --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: assistant-standard-debug-apk
+          path: app/build/outputs/apk/standard/debug/*.apk
+          if-no-files-found: error
