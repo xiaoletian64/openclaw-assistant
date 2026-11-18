@@ -729,7 +729,10 @@ class NodeRuntime(context: Context) {
 
   fun refreshGatewayConnection() {
     val endpoint = connectedEndpoint ?: return
-    val token = prefs.loadGatewayToken()
+    val token = prefs.loadGatewayToken()?.takeIf { it.isNotBlank() }
+      ?: com.openclaw.assistant.backend.BackendRepository.getInstance(appContext)
+        .backends.value.firstOrNull { it.type == com.openclaw.assistant.backend.BackendType.OPENCLAW_GATEWAY }
+        ?.apiKeyOrToken?.takeIf { it.isNotBlank() }
     val password = prefs.loadGatewayPassword()
     val bootstrapToken = prefs.loadGatewayBootstrapToken()
     val tls = connectionManager.resolveTlsParams(endpoint)
