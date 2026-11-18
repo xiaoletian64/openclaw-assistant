@@ -289,6 +289,7 @@ internal data class PairingPayload(
     val openClawSetupCode: String?,
     val terminalCommandUrl: String? = null,
     val terminalCommandSecret: String? = null,
+    val openClawToken: String? = null,
 )
 
 internal data class HermesPairingPayload(
@@ -485,12 +486,14 @@ internal fun parsePairingUri(uri: Uri): PairingPayload? {
     val openClawSetupCode = uri.getQueryParameter("oc")?.trim()?.ifEmpty { null }
     val terminalCommandUrl = uri.getQueryParameter("oau")?.trim()?.takeIf { it.startsWith("http://") || it.startsWith("https://") }
     val terminalCommandSecret = uri.getQueryParameter("oas")?.trim()?.ifEmpty { null }
+    val openClawToken = uri.getQueryParameter("ot")?.trim()?.ifEmpty { null }
     if (hermes == null && openClawSetupCode == null) return null
     return PairingPayload(
         hermes = hermes,
         openClawSetupCode = openClawSetupCode,
         terminalCommandUrl = terminalCommandUrl,
         terminalCommandSecret = terminalCommandSecret,
+        openClawToken = openClawToken,
     )
 }
 
@@ -760,7 +763,7 @@ internal fun applyPairingPayload(
             port = parsed.port,
             useTls = parsed.tls,
             baseUrl = parsed.displayUrl,
-            apiKeyOrToken = decoded.token ?: decoded.password ?: decoded.bootstrapToken,
+            apiKeyOrToken = payload.openClawToken ?: decoded.token ?: decoded.password ?: decoded.bootstrapToken,
             isPrimary = target?.isPrimary ?: current.none { it.isPrimary && it.enabled },
             createdAt = target?.createdAt ?: System.currentTimeMillis(),
         )
