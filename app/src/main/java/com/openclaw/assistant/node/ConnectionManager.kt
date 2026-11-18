@@ -20,6 +20,7 @@ import com.openclaw.assistant.protocol.OpenClawScreenCommand
 import com.openclaw.assistant.protocol.OpenClawSmsCommand
 import com.openclaw.assistant.protocol.OpenClawNotificationsCommand
 import com.openclaw.assistant.protocol.OpenClawSystemCommand
+import com.openclaw.assistant.protocol.OpenClawVoiceWakeCommand
 import com.openclaw.assistant.protocol.OpenClawPhotosCommand
 import com.openclaw.assistant.protocol.OpenClawContactsCommand
 import com.openclaw.assistant.protocol.OpenClawCalendarCommand
@@ -133,6 +134,11 @@ class ConnectionManager(
         add(OpenClawNotificationsCommand.List.rawValue)
         add(OpenClawNotificationsCommand.Actions.rawValue)
       }
+
+      // Voice wake remote control
+      add(OpenClawVoiceWakeCommand.GetMode.rawValue)
+      add(OpenClawVoiceWakeCommand.SetMode.rawValue)
+      add(OpenClawVoiceWakeCommand.Status.rawValue)
 
       // System
       add(OpenClawSystemCommand.Notify.rawValue)

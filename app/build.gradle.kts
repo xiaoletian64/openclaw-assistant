@@ -40,7 +40,7 @@ fun getTagName(): String {
 
 fun getTagVersionCode(): Int {
     val count = executeCommand("git", "rev-list", "--count", "HEAD")
-    return try { count.toInt() } catch (e: Exception) { 1 }
+    return try { count.toInt() + 10 } catch (e: Exception) { 11 }
 }
 
 android {
