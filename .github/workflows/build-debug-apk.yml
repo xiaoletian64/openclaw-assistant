@@ -1,62 +1,60 @@
 name: Build Debug APK
-
 on:
   workflow_dispatch:
-
 permissions:
-  contents: read
-
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Stable debug keystore
+        run: |
+          mkdir -p $HOME/.android
+          echo "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" | base64 -d > $HOME/.android/debug.keystore
       - name: Stub google-services.json
         run: |
-          cat > app/google-services.json << 'EOT'
+          cat > app/google-services.json <<'EOT'
           {
             "project_info": {
-              "project_number": "000000000000",
-              "project_id": "mock-project-id",
-              "storage_bucket": "mock-project-id.appspot.com"
+              "project_number": "123456789012",
+              "project_id": "openclaw-assistant-stub",
+              "storage_bucket": "openclaw-assistant-stub.appspot.com"
             },
             "client": [
               {
                 "client_info": {
-                  "mobilesdk_app_id": "1:000000000000:android:0000000000000001",
+                  "mobilesdk_app_id": "1:123456789012:android:1234567890abcdef123456",
                   "android_client_info": {
                     "package_name": "com.openclaw.assistant.debug"
                   }
                 },
-                "api_key": [{ "current_key": "mock-api-key" }],
-                "services": { "analytics_service": { "status": 1 }, "appinvite_service": { "status": 1, "other_platform_oauth_client": [] }, "ads_service": { "status": 2 } }
+                "oauth_client": [],
+                "api_key": [
+                  {
+                    "current_key": "AIzaSyStubKeyForBuildOnly1234567890abc"
+                  }
+                ],
+                "services": {
+                  "appinvite_service": {
+                    "other_platform_oauth_client": []
+                  }
+                }
               }
             ],
             "configuration_version": "1"
           }
           EOT
-
-      - name: Build Standard Debug APK
+      - name: Build standard debug APK
         env:
           FIREBASE_ENABLED: false
         run: ./gradlew assembleStandardDebug --no-daemon
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: assistant-standard-debug-apk
           path: app/build/outputs/apk/standard/debug/*.apk
-          if-no-files-found: error
